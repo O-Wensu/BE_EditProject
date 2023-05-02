@@ -15,6 +15,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,17 +36,17 @@ public class ChatController {
 		// createChatRoom의 결과인 roomId와 type : ENTER을 저장한 chatDto에 넣어줘야함
 	}
 
+	@PostMapping("/chat/find")
+	public ResponseDto findChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return chatService.findChatRoom(chatRoomRequestDto, userDetails.getMember());
+	}
+
 	@MessageMapping("/chat/enter")
 	@SendTo("/sub/chat/room")
 	public void enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
 		Thread.sleep(500); // simulated delay
 		ChatDto newchatdto = chatService.enterChatRoom(chatDto, headerAccessor);
 		msgOperation.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), newchatdto);
-	}
-
-	@PostMapping("/chat/find")
-	public ResponseDto findChatRoom(ChatRoomRequestDto chatRoomRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return chatService.findChatRoom(chatRoomRequestDto, userDetails.getMember());
 	}
 
 	@MessageMapping("/chat/send")
