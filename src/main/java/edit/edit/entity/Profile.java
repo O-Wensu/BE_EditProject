@@ -5,9 +5,11 @@ import edit.edit.dto.profile.ProfileRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
     @Id
@@ -15,22 +17,25 @@ public class Profile {
     @Column(name = "profile_id")
     private Long id;
     @Column(nullable = false)
+    @ColumnDefault("'편집툴추가'")
     private String editTool;
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("'경력없음'")
     private String career;
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("'협의가능'")
     private String form;
     @Column(nullable = false)
+    @ColumnDefault("0")
     private int salary;
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("'무관'")
     private String genre;
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("'무관'")
     private String workStyle;
     @Column(nullable = false)
+    @ColumnDefault("'주특기추가'")
     private String specialty;
     @Column
     private String video;
@@ -38,7 +43,7 @@ public class Profile {
     private String homepage;
     @Column
     private String img;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JsonBackReference
     @JoinColumn(name = "member_id")
     private Member member;

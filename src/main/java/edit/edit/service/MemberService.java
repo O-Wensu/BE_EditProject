@@ -4,9 +4,12 @@ import edit.edit.dto.ResponseDto;
 import edit.edit.dto.member.LoginRequestDto;
 import edit.edit.dto.member.MemberResponseDto;
 import edit.edit.dto.member.SignupRequestDto;
+import edit.edit.dto.profile.ProfileRequestDto;
 import edit.edit.entity.Member;
+import edit.edit.entity.Profile;
 import edit.edit.jwt.JwtUtil;
 import edit.edit.repository.MemberRepository;
+import edit.edit.repository.ProfileRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     /**
@@ -35,7 +39,12 @@ public class MemberService {
         validExistNickname(nickname);
         validExistEmail(email);
 
-        memberRepository.save(signupRequestDto.toEntity(encodedPassword));
+        ProfileRequestDto profileRequestDto = new ProfileRequestDto();
+        Profile profile = profileRequestDto.toEntity();
+
+        // 영속성 전이(cascade) 때문에 프로필만 추가해도 자동으로 사용자가 추가됨.
+        profile.addMember(signupRequestDto.toEntity(encodedPassword));
+        profileRepository.save(profile);
         return ResponseDto.setSuccess("signup success", null);
     }
 

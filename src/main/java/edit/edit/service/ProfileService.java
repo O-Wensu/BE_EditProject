@@ -5,33 +5,22 @@ import edit.edit.dto.profile.ProfileRequestDto;
 import edit.edit.dto.profile.ProfileResponseDto;
 import edit.edit.entity.Member;
 import edit.edit.entity.Profile;
-import edit.edit.jwt.JwtUtil;
-import edit.edit.repository.MemberRepository;
 import edit.edit.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
-
-    @Transactional
-    public ResponseDto save(ProfileRequestDto profileRequestDto, Member member) {
-        Profile profile = profileRequestDto.toEntity();
-        profileRepository.save(profile);
-
-        profile.addMember(member);
-        return ResponseDto.setSuccess("profile save success", profile);
-    }
 
     @Transactional(readOnly = true)
-    public ResponseDto getProfile(Long id) {
-        Profile profile = existProfile(id);
+    public ResponseDto getProfile(Long memberId) {
+        Profile profile = existProfile(memberId);
         ProfileResponseDto profileResponseDto = new ProfileResponseDto(profile);
         return ResponseDto.setSuccess("getProfile success", profileResponseDto);
     }
@@ -45,8 +34,10 @@ public class ProfileService {
         return ResponseDto.setSuccess("profile update success", profile);
     }
 
-    private Profile existProfile(Long id){
-        return profileRepository.findById(id).orElseThrow();
+    private Profile existProfile(Long memberId){
+        return profileRepository.findByMemberId(memberId).orElseThrow(
+                () -> new NoSuchElementException("프로필을 작성한 회원이 없습니다.")
+        );
     }
 
     private void isProfileMember(Member member, Profile profile){

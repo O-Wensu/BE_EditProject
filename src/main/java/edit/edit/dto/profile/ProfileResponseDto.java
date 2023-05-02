@@ -1,6 +1,6 @@
 package edit.edit.dto.profile;
 
-import edit.edit.entity.Member;
+import edit.edit.dto.member.MemberResponseDto;
 import edit.edit.entity.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class ProfileResponseDto {
     private String video;
     private String homepage;
     private String img;
-    private Member member;
+    private MemberResponseDto member;
 
     public ProfileResponseDto(Profile profile){
         this.id=profile.getId();
@@ -33,6 +33,6 @@ public class ProfileResponseDto {
         this.video=profile.getVideo();
         this.homepage=profile.getHomepage();
         this.img=profile.getImg();
-        this.member=profile.getMember();
+        this.member=new MemberResponseDto(profile.getMember());
     }
 }
