@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
@@ -22,15 +24,14 @@ public class ExceptionAdvisor {
     public ResponseEntity signValidException(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
-        StringBuilder builder = new StringBuilder();
+        Map<String, String> errorMap = new HashMap<>();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            builder.append("[");
-            builder.append(fieldError.getField());
-            builder.append("] ");
-            builder.append(fieldError.getDefaultMessage());
+            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
+
+        ResponseDto responseDto = ResponseDto.setBadRequest("valid error", errorMap);
+        return ResponseEntity.badRequest().body(responseDto);
     }
 
     /**

@@ -19,4 +19,8 @@ public class ResponseDto<T> {
     public static <T> ResponseDto<T> setBadRequest(String message){
         return ResponseDto.set(StatusCode.BAD_REQUEST, message, null);
     }
+
+    public static <T> ResponseDto<T> setBadRequest(String message, T data){
+        return ResponseDto.set(StatusCode.BAD_REQUEST, message, data);
+    }
 }
