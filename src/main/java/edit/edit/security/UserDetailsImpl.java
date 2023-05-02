@@ -36,6 +36,10 @@ public class UserDetailsImpl implements UserDetails {
         return this.userId;
     }
 
+    public String getNickname(){
+        return this.member.getNickname();
+    }
+
     @Override
     public String getPassword() {
         return null;
