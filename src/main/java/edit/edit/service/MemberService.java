@@ -2,6 +2,7 @@ package edit.edit.service;
 
 import edit.edit.dto.ResponseDto;
 import edit.edit.dto.member.LoginRequestDto;
+import edit.edit.dto.member.MemberResponseDto;
 import edit.edit.dto.member.SignupRequestDto;
 import edit.edit.entity.Member;
 import edit.edit.jwt.JwtUtil;
@@ -48,10 +49,9 @@ public class MemberService {
         //유효성 검사
         Member member = validateIsMember(userId);
         validatePassword(member, password);
-
         response.addHeader(jwtUtil.ACCESS_HEADER, jwtUtil.createToken(userId));
 
-        return ResponseDto.setSuccess("login success", null);
+        return ResponseDto.setSuccess("login success", new MemberResponseDto(member));
     }
 
     //====유효성 검사====
