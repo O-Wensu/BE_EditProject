@@ -33,7 +33,7 @@ public class ChatService {
     public ResponseDto createChatRoom(ChatRoomRequestDto requestDto, Member sender) {
             Member receiver = memberRepository.findByNickname(requestDto.getNickname()).get();
             //이미 reciever와 sender로 생성된 채팅방이 있는지 확인
-            JoinChatRoom findChatRoom = validExistChatRoom(receiver, sender);
+            JoinChatRoom findChatRoom = findExistChatRoom(receiver, sender);
 
             //채팅방 있으면 ChatRoom의 roomId 반환
             if (findChatRoom != null){
@@ -52,20 +52,22 @@ public class ChatService {
 
     public ChatDto enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) {
         // 채팅방 찾기
-        ChatRoom chatRoom = validExistChatRoom(chatDto.getRoomId());
+        ChatRoom chatRoom = findExistChatRoom(chatDto.getRoomId());
         // 예외처리
         //반환 결과를 socket session에 사용자의 id로 저장
         headerAccessor.getSessionAttributes().put("nickname", chatDto.getSender());
         headerAccessor.getSessionAttributes().put("roomId", chatDto.getRoomId());
 
         chatDto.setMessage(chatDto.getSender() + "님 입장!! ο(=•ω＜=)ρ⌒☆");
+        JoinChatRoom joinChatRoom = joinChatRoomRepository.findByChatRoomId(chatRoom.getId());
+        chatDto.setRoomName(joinChatRoom.getRoomName());
         return chatDto;
     }
 
     public ResponseDto findChatRoom(ChatRoomRequestDto receiverNickname, Member sender){
         Member receiver = memberRepository.findByNickname(receiverNickname.getNickname()).get();
-        JoinChatRoom findChatRoom = validExistChatRoom(receiver, sender);
-        return ResponseDto.setSuccess("find your chatting room", findChatRoom.getChatRoom().getRoomId());
+        JoinChatRoom findChatRoom = findExistChatRoom(receiver, sender);
+        return ResponseDto.setSuccess("find your chatting room", new ChatRoomResponseDto(findChatRoom));
     }
 
     public ChatDto disconnectChatRoom(SimpMessageHeaderAccessor headerAccessor) {
@@ -88,7 +90,7 @@ public class ChatService {
         return chatDto;
     }
 
-    private JoinChatRoom validExistChatRoom(Member receiver, Member sender) {
+    private JoinChatRoom findExistChatRoom(Member receiver, Member sender) {
         // JoinChatRoom 엔티티를 사용하여 sender와 receiver가 각각 속한 채팅방 정보를 조회
         Optional<List<JoinChatRoom>> joinChatRoomReceiver = joinChatRoomRepository.findAllByMemberId(receiver.getId());
         Optional<List<JoinChatRoom>> joinChatRoomSender = joinChatRoomRepository.findAllByMemberId(sender.getId());
@@ -109,16 +111,17 @@ public class ChatService {
         for (int i = 0; i < minSize; i++) {
             Long senderRoomId = senderJoinChatRooms.get(i).getChatRoom().getId();
             Long receiverRoomId = receiverJoinChatRooms.get(i).getChatRoom().getId();
+            Long senderMemberId =  senderJoinChatRooms.get(i).getMember().getId();
 
-            if (senderRoomId.equals(receiverRoomId)) {
+            //sender와 receiver의 ChatRoomId가 같고, memberId가 sender의 Id와 같은 채팅방
+            if (senderRoomId.equals(receiverRoomId) && senderMemberId.equals(sender.getId())) {
                 joinChatRoom = senderJoinChatRooms.get(i);
             }
         }
-
         return joinChatRoom;
     }
 
-    private ChatRoom validExistChatRoom(String roomId) {
+    private ChatRoom findExistChatRoom(String roomId) {
         return chatRoomRepository.findByRoomId(roomId).orElseThrow(
                 () -> new NoSuchElementException("채팅방이 존재하지 않습니다.")
         );

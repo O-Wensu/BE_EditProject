@@ -24,7 +24,7 @@ public class JoinChatRoom {
 
     private String roomName;
 
-    public JoinChatRoom(Member member, ChatRoom chatRoom) {
+    public JoinChatRoom(Member member, ChatRoom chatRoom, String partnerName) {
         this.member = member;
         this.chatRoom = chatRoom;
         this.roomName = partnerName + "님과의 대화 ο(=•ω＜=)ρ⌒☆";

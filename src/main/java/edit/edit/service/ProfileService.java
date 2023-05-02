@@ -45,5 +45,4 @@ public class ProfileService {
             throw new IllegalArgumentException("일치하는 회원이 아닙니다.");
         }
     }
-
 }

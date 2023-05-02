@@ -20,18 +20,11 @@ public class ChatRoom {
     @Column(nullable = false)
     private String roomId;
 
-    @Column(nullable = false)
-    private String roomName;
-
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private List<JoinChatRoom> joinChatRooms = new ArrayList<>();
 
-    public static ChatRoom of(Member receiver) {
-        return ChatRoom.builder()
-                .roomId(UUID.randomUUID().toString())
-                .roomName(receiver.getNickname() + "님과의 대화 ο(=•ω＜=)ρ⌒☆")
-                .joinChatRooms(new ArrayList<>())
-                .build();
+    public ChatRoom() {
+        this.roomId = UUID.randomUUID().toString();
     }
 
     public void addJoinChatRoom(JoinChatRoom joinChatRoom) {

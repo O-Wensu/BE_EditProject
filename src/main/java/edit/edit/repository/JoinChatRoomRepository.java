@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface JoinChatRoomRepository extends JpaRepository<JoinChatRoom, Long> {
     Optional<List<JoinChatRoom>> findAllByMemberId(Long member_id);
+    JoinChatRoom findByChatRoomId(Long chatRoom_id);
 }
