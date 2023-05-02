@@ -22,16 +22,15 @@ public class JoinChatRoom {
     @JoinColumn(name = "chatRoom_id")
     private ChatRoom chatRoom;
 
+    private String roomName;
+
     public JoinChatRoom(Member member, ChatRoom chatRoom) {
         this.member = member;
         this.chatRoom = chatRoom;
+        this.roomName = partnerName + "님과의 대화 ο(=•ω＜=)ρ⌒☆";
     }
 
     public void setMember(Member member) {
         this.member = member;
-    }
-
-    public void setChatRoom(ChatRoom chatRoom) {
-        this.chatRoom = chatRoom;
     }
 }

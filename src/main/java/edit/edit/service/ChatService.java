@@ -3,6 +3,7 @@ package edit.edit.service;
 import edit.edit.dto.ResponseDto;
 import edit.edit.dto.chat.ChatDto;
 import edit.edit.dto.chat.ChatRoomRequestDto;
+import edit.edit.dto.chat.ChatRoomResponseDto;
 import edit.edit.entity.ChatRoom;
 import edit.edit.entity.JoinChatRoom;
 import edit.edit.entity.Member;
@@ -37,15 +38,16 @@ public class ChatService {
             //채팅방 있으면 ChatRoom의 roomId 반환
             if (findChatRoom != null){
                 log.info("already has room");
-                return ResponseDto.setSuccess("already has room and find Chat Room Success!", findChatRoom.getChatRoom().getRoomId());
+                return ResponseDto.setSuccess("already has room and find Chat Room Success!", new ChatRoomResponseDto(findChatRoom));
             }
 
             //채팅방 없으면 receiver와 sender의 방을 생성해주고 roomId 반환
-            ChatRoom newChatRoom = ChatRoom.of(receiver);
-            newChatRoom.addJoinChatRoom(new JoinChatRoom(receiver, newChatRoom));
-            newChatRoom.addJoinChatRoom(new JoinChatRoom(sender, newChatRoom));
+            ChatRoom newChatRoom = new ChatRoom();
+            JoinChatRoom newJoinChatRoom = new JoinChatRoom(sender, newChatRoom, receiver.getNickname());
+            newChatRoom.addJoinChatRoom(newJoinChatRoom);
+            newChatRoom.addJoinChatRoom(new JoinChatRoom(receiver, newChatRoom, sender.getNickname()));
             chatRoomRepository.save(newChatRoom);
-            return ResponseDto.setSuccess("create ChatRoom success", newChatRoom.getRoomId());
+            return ResponseDto.setSuccess("create ChatRoom success", new ChatRoomResponseDto(newJoinChatRoom));
     }
 
     public ChatDto enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) {
@@ -70,12 +72,16 @@ public class ChatService {
         String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
         String nickName = (String) headerAccessor.getSessionAttributes().get("nickname");
 
+        Long chatRoomId = chatRoomRepository.findByRoomId(roomId).get().getId();
+        String roomName = joinChatRoomRepository.findByChatRoomId(chatRoomId).getRoomName();
+
 //        chatRoomRepository.deleteByRoomId(roomId);
 
         ChatDto chatDto = ChatDto.builder()
                 .type(ChatDto.MessageType.LEAVE)
                 .roomId(roomId)
                 .sender(nickName)
+                .roomName(roomName)
                 .message(nickName + "님 퇴장!! ヽ(*。>Д<)o゜")
                 .build();
 

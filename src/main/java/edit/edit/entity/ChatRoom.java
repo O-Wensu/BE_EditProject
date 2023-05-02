@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "joinChatRooms")
 public class ChatRoom {
@@ -25,7 +24,7 @@ public class ChatRoom {
     private String roomName;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-    private List<JoinChatRoom> joinChatRooms;
+    private List<JoinChatRoom> joinChatRooms = new ArrayList<>();
 
     public static ChatRoom of(Member receiver) {
         return ChatRoom.builder()
