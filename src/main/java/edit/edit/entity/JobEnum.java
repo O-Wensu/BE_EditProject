@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public enum JobEnum {
     YOUTUBER("youtuber"),
-    Editor("editor");
+    EDITOR("editor");
 
     private String job;
 
