@@ -23,5 +23,16 @@ public class ChatDto {
     private String roomId;
     private String roomName;
     private String message;
+
+    @Override
+    public String toString() {
+        return "ChatDto{" +
+                "type=" + type +
+                ", sender='" + sender + '\'' +
+                ", roomId='" + roomId + '\'' +
+                ", roomName='" + roomName + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
 

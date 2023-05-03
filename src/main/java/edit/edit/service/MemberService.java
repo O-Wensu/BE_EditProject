@@ -63,6 +63,13 @@ public class MemberService {
         return ResponseDto.setSuccess("login success", new MemberResponseDto(member));
     }
 
+    public ResponseDto memberInfo(HttpServletRequest httpServletRequest) {
+        String token = jwtUtil.resolveToken(httpServletRequest);
+        String userId = jwtUtil.getUserInfoFromToken(token);
+        Member member = validateIsMember(userId);
+        return ResponseDto.setSuccess("memberInfo success", new MemberResponseDto(member));
+    }
+
     //====유효성 검사====
 
     private Member validateIsMember(String userId) {

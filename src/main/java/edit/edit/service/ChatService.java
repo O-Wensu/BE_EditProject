@@ -75,7 +75,8 @@ public class ChatService {
         String nickName = (String) headerAccessor.getSessionAttributes().get("nickname");
 
         Long chatRoomId = chatRoomRepository.findByRoomId(roomId).get().getId();
-        String roomName = joinChatRoomRepository.findByChatRoomId(chatRoomId).getRoomName();
+        Long memberId = memberRepository.findByNickname(nickName).get().getId();
+        String roomName = joinChatRoomRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId).get().getRoomName();
 
 //        chatRoomRepository.deleteByRoomId(roomId);
 
@@ -105,17 +106,12 @@ public class ChatService {
         List<JoinChatRoom> receiverJoinChatRooms = joinChatRoomReceiver.get();
 
         JoinChatRoom joinChatRoom = null;
-        int minSize = Math.min(senderJoinChatRooms.size(), receiverJoinChatRooms.size());
+        for(JoinChatRoom receiverRooms : receiverJoinChatRooms){
+            Long receiverRoomId = receiverRooms.getChatRoom().getId();
+            Optional<JoinChatRoom> targetJCR = joinChatRoomRepository.findByChatRoomIdAndMemberId(receiverRoomId, sender.getId());
 
-        //id가 같은 채팅방이 있는지 확인
-        for (int i = 0; i < minSize; i++) {
-            Long senderRoomId = senderJoinChatRooms.get(i).getChatRoom().getId();
-            Long receiverRoomId = receiverJoinChatRooms.get(i).getChatRoom().getId();
-            Long senderMemberId =  senderJoinChatRooms.get(i).getMember().getId();
-
-            //sender와 receiver의 ChatRoomId가 같고, memberId가 sender의 Id와 같은 채팅방
-            if (senderRoomId.equals(receiverRoomId) && senderMemberId.equals(sender.getId())) {
-                joinChatRoom = senderJoinChatRooms.get(i);
+            if(targetJCR.isPresent()){
+                joinChatRoom = targetJCR.get();
             }
         }
         return joinChatRoom;
