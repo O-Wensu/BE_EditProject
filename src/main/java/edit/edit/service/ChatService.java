@@ -59,7 +59,8 @@ public class ChatService {
         headerAccessor.getSessionAttributes().put("roomId", chatDto.getRoomId());
 
         chatDto.setMessage(chatDto.getSender() + "님 입장!! ο(=•ω＜=)ρ⌒☆");
-        JoinChatRoom joinChatRoom = joinChatRoomRepository.findByChatRoomId(chatRoom.getId());
+        Long sender_id = memberRepository.findByNickname(chatDto.getSender()).get().getId();
+        JoinChatRoom joinChatRoom = joinChatRoomRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), sender_id).get();
         chatDto.setRoomName(joinChatRoom.getRoomName());
         return chatDto;
     }
@@ -94,15 +95,13 @@ public class ChatService {
     private JoinChatRoom findExistChatRoom(Member receiver, Member sender) {
         // JoinChatRoom 엔티티를 사용하여 sender와 receiver가 각각 속한 채팅방 정보를 조회
         Optional<List<JoinChatRoom>> joinChatRoomReceiver = joinChatRoomRepository.findAllByMemberId(receiver.getId());
-        Optional<List<JoinChatRoom>> joinChatRoomSender = joinChatRoomRepository.findAllByMemberId(sender.getId());
 
         //속해있는 채팅방이 없으면
-        if (!joinChatRoomReceiver.isPresent() || !joinChatRoomSender.isPresent()) {
+        if (!joinChatRoomReceiver.isPresent()) {
             log.info("joinChatRoom findByMemberId 결과가 null!");
             return null;
         }
 
-        List<JoinChatRoom> senderJoinChatRooms = joinChatRoomSender.get();
         List<JoinChatRoom> receiverJoinChatRooms = joinChatRoomReceiver.get();
 
         JoinChatRoom joinChatRoom = null;

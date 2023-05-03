@@ -10,6 +10,7 @@ import edit.edit.entity.Profile;
 import edit.edit.jwt.JwtUtil;
 import edit.edit.repository.MemberRepository;
 import edit.edit.repository.ProfileRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
