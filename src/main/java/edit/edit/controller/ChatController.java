@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 public class ChatController {
 
 	private final ChatService chatService;
-	private final SimpMessagingTemplate msgOperation;
-	private final JwtUtil jwtUtil;
+	private final SimpMessagingTemplate msgTemplate;
+
 
 	@PostMapping("/chat")
 	@ResponseBody
@@ -38,6 +39,7 @@ public class ChatController {
 		// createChatRoom의 결과인 roomId와 type : ENTER을 저장한 chatDto에 넣어줘야함
 	}
 
+	@ResponseBody
 	@PostMapping("/chat/find")
 	public ResponseDto findChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return chatService.findChatRoom(chatRoomRequestDto, userDetails.getMember());
