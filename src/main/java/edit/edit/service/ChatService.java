@@ -13,7 +13,6 @@ import edit.edit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,8 +78,6 @@ public class ChatService {
         Long chatRoomId = chatRoomRepository.findByRoomId(roomId).get().getId();
         Long memberId = memberRepository.findByNickname(nickName).get().getId();
         String roomName = joinChatRoomRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId).get().getRoomName();
-
-//        chatRoomRepository.deleteByRoomId(roomId);
 
         ChatDto chatDto = ChatDto.builder()
                 .type(ChatDto.MessageType.LEAVE)

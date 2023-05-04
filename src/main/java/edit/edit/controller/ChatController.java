@@ -14,7 +14,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -68,39 +67,10 @@ public class ChatController {
 		msgTemplate.convertAndSend("/sub/chat/queue" + chatRoomIdRequestDto.getReceiver(), new ChatRoomIdResponseDto(chatRoomIdRequestDto.getRoomId(), chatRoomIdRequestDto.getSender()));
 	}
 
-	@SubscribeMapping("/chat/queue")
-	public void subscribeAlarm(ChatRoomIdResponseDto roomIdResponseDto, @AuthenticationPrincipal UserDetailsImpl userDetails, SimpMessageHeaderAccessor accessor) throws Exception {
-		log.info("구독 발생");
-		Thread.sleep(500);
-		ChatDto chatDto = ChatDto.builder()
-				.type(ChatDto.MessageType.ENTER)
-				.roomId(roomIdResponseDto.getRoomId())
-				.sender(userDetails.getNickname()).build();
-
-		enterChatRoom(chatDto, accessor);
-	}
-
 	@EventListener
 	public void webSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		ChatDto chatDto = chatService.disconnectChatRoom(headerAccessor);
 		msgTemplate.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), chatDto);
 	}
-//
-//	@EventListener
-//	public void webSocketConnectListener(SessionConnectedEvent event) {
-//		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-//		msgTemplate.convertAndSend("/sub/topic");
-//	}
-
-/*	private final String URL = "ws://localhost:4000/ws-edit/websocket";
-	@PostMapping("/chat/connect")
-	public void connect() {
-		WebSocketClient webSocketClient = new StandardWebSocketClient();
-		WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
-		stompClient.setMessageConverter(new StringMessageConverter());
-		StompSessionHandler sessionHandler = new SessionHandler();
-		log.info("connect event!!!");
-		stompClient.connect(URL, sessionHandler);
-	}*/
 }
