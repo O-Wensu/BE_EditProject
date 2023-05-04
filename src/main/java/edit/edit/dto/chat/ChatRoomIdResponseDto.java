@@ -10,8 +10,8 @@ public class ChatRoomIdResponseDto {
     private String type;
     private String sender;
 
-    public ChatRoomIdResponseDto(String roomId, String sender) {
-        this.roomId = roomId;
+    public ChatRoomIdResponseDto(ChatRoomIdRequestDto chatRoomIdRequestDto) {
+        this.roomId = chatRoomIdRequestDto.getRoomId();
         this.type = "SUB";
         this.sender = sender;
     }

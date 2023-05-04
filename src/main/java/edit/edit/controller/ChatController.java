@@ -47,7 +47,7 @@ public class ChatController {
 	@MessageMapping("/chat/enter")
 	@SendTo("/sub/chat/room")
 	public void enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-		Thread.sleep(500); // simulated delay
+		Thread.sleep(200); // simulated delay
 		ChatDto newchatdto = chatService.enterChatRoom(chatDto, headerAccessor);
 
 		msgTemplate.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), newchatdto);
@@ -56,15 +56,15 @@ public class ChatController {
 	@MessageMapping("/chat/send")
 	@SendTo("/sub/chat/room")
 	public void sendChatRoom(ChatDto chatDto) throws Exception {
-		Thread.sleep(500); // simulated delay
+		Thread.sleep(200); // simulated delay
 		msgTemplate.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), chatDto);
 	}
 
 	@MessageMapping("/chat/subscribe")
 	@SendTo("/sub/chat/queue")
 	public void subscribeUser(ChatRoomIdRequestDto chatRoomIdRequestDto) throws Exception {
-		Thread.sleep(500); // simulated delay
-		msgTemplate.convertAndSend("/sub/chat/queue" + chatRoomIdRequestDto.getReceiver(), new ChatRoomIdResponseDto(chatRoomIdRequestDto.getRoomId(), chatRoomIdRequestDto.getSender()));
+		Thread.sleep(200); // simulated delay
+		msgTemplate.convertAndSend("/sub/chat/queue" + chatRoomIdRequestDto.getReceiver(), new ChatRoomIdResponseDto(chatRoomIdRequestDto));
 	}
 
 	@EventListener

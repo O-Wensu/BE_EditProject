@@ -37,8 +37,7 @@ public class ChatService {
 
             //채팅방 있으면 ChatRoom의 roomId 반환
             if (findChatRoom != null){
-                log.info("already has room");
-                return ResponseDto.setSuccess("already has room and find Chat Room Success!", new ChatRoomResponseDto(findChatRoom));
+                return ResponseDto.setSuccess("already has room and find Chat Room Success!", new ChatRoomResponseDto(findChatRoom, "EXIST"));
             }
 
             //채팅방 없으면 receiver와 sender의 방을 생성해주고 roomId 반환
@@ -47,7 +46,7 @@ public class ChatService {
             newChatRoom.addJoinChatRoom(newJoinChatRoom);
             newChatRoom.addJoinChatRoom(new JoinChatRoom(receiver, newChatRoom, sender.getNickname()));
             chatRoomRepository.save(newChatRoom);
-            return ResponseDto.setSuccess("create ChatRoom success", new ChatRoomResponseDto(newJoinChatRoom));
+            return ResponseDto.setSuccess("create ChatRoom success", new ChatRoomResponseDto(newJoinChatRoom, "NEW"));
     }
 
     public ChatDto enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) {
@@ -68,7 +67,7 @@ public class ChatService {
     public ResponseDto findChatRoom(ChatRoomRequestDto receiverNickname, Member sender){
         Member receiver = memberRepository.findByNickname(receiverNickname.getReceiver()).get();
         JoinChatRoom findChatRoom = findExistChatRoom(receiver, sender);
-        return ResponseDto.setSuccess("find your chatting room", new ChatRoomResponseDto(findChatRoom));
+        return ResponseDto.setSuccess("find your chatting room", new ChatRoomResponseDto(findChatRoom, "EXIST"));
     }
 
     public ChatDto disconnectChatRoom(SimpMessageHeaderAccessor headerAccessor) {

@@ -11,9 +11,11 @@ import edit.edit.entity.JoinChatRoom;
 public class ChatRoomResponseDto {
     String roomId;
     String roomName;
+    String type;
 
-    public ChatRoomResponseDto(JoinChatRoom joinChatRoom) {
+    public ChatRoomResponseDto(JoinChatRoom joinChatRoom, String type) {
         this.roomId = joinChatRoom.getChatRoom().getRoomId();
         this.roomName = joinChatRoom.getRoomName();
+        this.type = type;
     }
 }
