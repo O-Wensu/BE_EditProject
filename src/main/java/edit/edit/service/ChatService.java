@@ -31,7 +31,7 @@ public class ChatService {
     private final JoinChatRoomRepository joinChatRoomRepository;
 
     public ResponseDto createChatRoom(ChatRoomRequestDto requestDto, Member sender) {
-            Member receiver = memberRepository.findByNickname(requestDto.getNickname()).get();
+            Member receiver = memberRepository.findByNickname(requestDto.getReceiver()).get();
             //이미 reciever와 sender로 생성된 채팅방이 있는지 확인
             JoinChatRoom findChatRoom = findExistChatRoom(receiver, sender);
 
