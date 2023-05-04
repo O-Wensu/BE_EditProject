@@ -57,7 +57,7 @@ public class ChatService {
         headerAccessor.getSessionAttributes().put("nickname", chatDto.getSender());
         headerAccessor.getSessionAttributes().put("roomId", chatDto.getRoomId());
 
-        chatDto.setMessage(chatDto.getSender() + "님 입장!! ο(=•ω＜=)ρ⌒☆");
+        //chatDto.setMessage(chatDto.getSender() + "님 입장!! ο(=•ω＜=)ρ⌒☆");
         Long sender_id = memberRepository.findByNickname(chatDto.getSender()).get().getId();
         JoinChatRoom joinChatRoom = joinChatRoomRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), sender_id).get();
         chatDto.setRoomName(joinChatRoom.getRoomName());
@@ -83,7 +83,7 @@ public class ChatService {
                 .roomId(roomId)
                 .sender(nickName)
                 .roomName(roomName)
-                .message(nickName + "님 퇴장!! ヽ(*。>Д<)o゜")
+                //.message(nickName + "님 퇴장!! ヽ(*。>Д<)o゜")
                 .build();
 
         return chatDto;

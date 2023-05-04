@@ -49,7 +49,6 @@ public class ChatController {
 	public void enterChatRoom(ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
 		Thread.sleep(200); // simulated delay
 		ChatDto newchatdto = chatService.enterChatRoom(chatDto, headerAccessor);
-
 		msgTemplate.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), newchatdto);
 	}
 

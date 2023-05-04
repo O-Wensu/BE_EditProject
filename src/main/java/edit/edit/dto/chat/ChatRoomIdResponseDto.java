@@ -13,6 +13,6 @@ public class ChatRoomIdResponseDto {
     public ChatRoomIdResponseDto(ChatRoomIdRequestDto chatRoomIdRequestDto) {
         this.roomId = chatRoomIdRequestDto.getRoomId();
         this.type = "SUB";
-        this.sender = sender;
+        this.sender = chatRoomIdRequestDto.getSender();
     }
 }
